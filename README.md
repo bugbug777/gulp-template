@@ -34,3 +34,4 @@
 
 1. `gulp html` - 複製 html
 2. `gulp css` - 複製 css
+3. `gulp clean` - 清除暫存檔案
