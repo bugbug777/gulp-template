@@ -33,3 +33,4 @@
 ## 相關命令 <a name = "usage"></a>
 
 1. `gulp html` - 複製 html
+2. `gulp css` - 複製 css
