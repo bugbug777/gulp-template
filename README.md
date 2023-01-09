@@ -35,8 +35,9 @@
 
 1. `gulp html` - 複製 html
 2. `gulp css` - 複製 css
-3. `gulp clean` - 清除暫存檔案
-4. `gulp watch` - 自動監測檔案異動
+3. `gulp js` - 複製 js
+4. `gulp clean` - 清除暫存檔案
+5. `gulp watch` - 自動監測檔案異動
 
 ## 關於 `gulp watch`
 

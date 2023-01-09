@@ -17,6 +17,14 @@ const css = () => {
     .pipe(dest('./public/styles'))
 }
 
+const js = () => {
+  /**
+   * 複製 src/assets/scripts 目錄下的 .js 檔案到 public/scripts 目錄中
+   */
+  return src('./src/assets/scripts/**/*.js')
+    .pipe(dest('./public/scripts'))
+}
+
 const cleanFiles = () => {
   /**
    * 在開始複製、編譯檔案前，清除 public 目錄，以確保產生乾淨的新檔案
@@ -34,6 +42,7 @@ const watchFiles = (done) => {
    */
   watch('./src/**/*.html', html)
   watch('./src/assets/styles/**/*.css', css)
+  watch('./src/assets/scripts/**/*.js', js)
 
   done()
 }
@@ -41,8 +50,9 @@ const watchFiles = (done) => {
 // 測試指令
 exports.html = html
 exports.css = css
+exports.js = js
 exports.clean = cleanFiles
 exports.watch = watchFiles
 
 // 預設指令
-exports.default = series(cleanFiles, parallel(html, css), watchFiles)
+exports.default = series(cleanFiles, parallel(html, css, js), watchFiles)
