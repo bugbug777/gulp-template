@@ -1,4 +1,4 @@
-const { src, dest, series, parallel } = require('gulp')
+const { src, dest, series, parallel, watch } = require('gulp')
 const clean = require('gulp-clean')
 
 const html = () => {
@@ -27,10 +27,22 @@ const cleanFiles = () => {
     .pipe(clean())
 }
 
+const watchFiles = (done) => {
+  /**
+   * 自動監測檔案變化，並進行檔案的複製、編譯異動
+   * watch syntax: watch('glob string', task func)
+   */
+  watch('./src/**/*.html', html)
+  watch('./src/assets/styles/**/*.css', css)
+
+  done()
+}
+
 // 測試指令
 exports.html = html
 exports.css = css
 exports.clean = cleanFiles
+exports.watch = watchFiles
 
 // 預設指令
-exports.default = series(cleanFiles, parallel(html, css))
+exports.default = series(cleanFiles, parallel(html, css), watchFiles)
