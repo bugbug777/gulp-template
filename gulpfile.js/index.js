@@ -2,6 +2,7 @@ const { src, dest, series, parallel, watch } = require('gulp')
 const postcss = require('gulp-postcss')
 const sourcemaps = require('gulp-sourcemaps')
 const concat = require('gulp-concat')
+const babel = require('gulp-babel');
 const clean = require('gulp-clean')
 
 const html = () => {
@@ -33,6 +34,9 @@ const js = () => {
    */
   return src('./src/assets/scripts/**/*.js')
     .pipe(sourcemaps.init()) // 初始化 sourcemaps
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
     .pipe(concat('all.js'))
     .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/scripts'))
