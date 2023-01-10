@@ -1,4 +1,5 @@
 const { src, dest, series, parallel, watch } = require('gulp')
+const postcss = require('gulp-postcss')
 const clean = require('gulp-clean')
 
 const html = () => {
@@ -12,8 +13,10 @@ const html = () => {
 const css = () => {
   /**
    * 複製 src/assets/styles 目錄下的 .css 檔案到 public/styles 目錄中
+   * 1. 使用 postcss 搭配 autoprefixer 替 CSS 語法加上前綴詞
    */
   return src('./src/assets/styles/**/*.css')
+    .pipe(postcss())
     .pipe(dest('./public/styles'))
 }
 
@@ -40,8 +43,8 @@ const watchFiles = (done) => {
    * 自動監測檔案變化，並進行檔案的複製、編譯異動
    * watch syntax: watch('glob string', task func)
    */
-  watch('./src/**/*.html', html)
-  watch('./src/assets/styles/**/*.css', css)
+  watch(['./src/**/*.{html,css,js}'], parallel(html, css))
+  // watch('./src/assets/styles/**/*.css', css)
   watch('./src/assets/scripts/**/*.js', js)
 
   done()

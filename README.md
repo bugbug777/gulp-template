@@ -8,6 +8,7 @@
   - [測試環境 ](#測試環境-)
   - [快速開始 ](#快速開始-)
   - [相關命令 ](#相關命令-)
+  - [關於 gulp-template 目錄結構](#關於-gulp-template-目錄結構)
   - [關於 `gulp watch`](#關於-gulp-watch)
 
 ## 關於 <a name = "about"></a>
@@ -38,6 +39,19 @@
 3. `gulp js` - 複製 js
 4. `gulp clean` - 清除暫存檔案
 5. `gulp watch` - 自動監測檔案異動
+
+## 關於 gulp-template 目錄結構
+
+```
+gulp-template
+  | - src/                 # development 目錄
+  | - public/              # production 目錄
+  | - gulpfile.js/         # gulp 設定檔
+  | - postcss.config.js    # postcss 相關套件引入
+  | - browserslistrc       # 瀏覽器相容性
+  | - package.json         # Node pkgs
+  | - README.md
+```
 
 ## 關於 `gulp watch`
 
