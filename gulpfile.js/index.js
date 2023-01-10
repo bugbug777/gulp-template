@@ -1,6 +1,7 @@
 const { src, dest, series, parallel, watch } = require('gulp')
 const postcss = require('gulp-postcss')
 const sourcemaps = require('gulp-sourcemaps')
+const concat = require('gulp-concat')
 const clean = require('gulp-clean')
 
 const html = () => {
@@ -28,11 +29,12 @@ const css = () => {
 const js = () => {
   /**
    * 複製 src/assets/scripts 目錄下的 .js 檔案到 public/scripts 目錄中
+   * 1. 將數個 scripts 整合成一個 scripts 輸出，減少頁面請求次數，提升網頁載入效率
    */
   return src('./src/assets/scripts/**/*.js')
-    // sourcemaps 先放著
-    // .pipe(sourcemaps.init()) // 初始化 sourcemaps
-    // .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
+    .pipe(sourcemaps.init()) // 初始化 sourcemaps
+    .pipe(concat('all.js'))
+    .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/scripts'))
 }
 
@@ -50,8 +52,10 @@ const watchFiles = (done) => {
   /**
    * 自動監測檔案變化，並進行檔案的複製、編譯異動
    * watch syntax: watch('glob string', task func)
+   * 1. 移除 globs string {html,css,js} 語法，直接在 ./src 下搜索此語法，可能會浪費效能，應該修改為針對每個目錄進行監測
    */
-  watch(['./src/**/*.{html,css,js}'], parallel(html, css))
+  watch('./src/**/*.html', html)
+  watch(['./src/**/*.html', './src/assets/styles/**/*.css', './src/assets/scripts/**/*.js'], css)
   watch('./src/assets/scripts/**/*.js', js)
 
   done()

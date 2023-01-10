@@ -10,6 +10,7 @@
   - [相關命令 ](#相關命令-)
   - [關於 gulp-template 目錄結構](#關於-gulp-template-目錄結構)
   - [關於 `gulp watch`](#關於-gulp-watch)
+  - [關於 sourcemaps](#關於-sourcemaps)
 
 ## 關於 <a name = "about"></a>
 
@@ -56,3 +57,7 @@ gulp-template
 ## 關於 `gulp watch`
 
 `gulp watch` 可以自動監測檔案的異動狀況，新增以及修改都能夠正常運作，但是當 `src` 目錄中的檔案被移除時，並不會主動的移除 `public` 目錄中的檔案，這點是需要多加注意的地方，解決的辦法是，重新使用 `gulp` 預設指令，此指令會在執行開始時，主動清除舊有的目錄以及檔案，並重新產生新的資料。
+
+## 關於 sourcemaps
+
+輸出目錄 `public/` 中，`styles/` 以及 `scripts/` 皆有一個 `maps/`，此目錄主要用於分類、存放 sourcemaps，如果想要讓專案結構更加扁平化，可以自行到 `gulpfile.js` 自行修改輸出目錄。
