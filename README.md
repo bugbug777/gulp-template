@@ -21,7 +21,7 @@
 
 ## 測試環境 <a name = "test_enviroment"></a>
 
-1. Node 12.22.12
+1. Node 12.22.12（ Node 14.x 應該也可以正常運作 ）
 2. npm v6.14.16
 
 ## 快速開始 <a name = "quick_start"></a>
@@ -44,13 +44,13 @@
 
 ```
 gulp-template
-  | - src/                 # development 目錄
-  | - public/              # production 目錄
-  | - gulpfile.js/         # gulp 設定檔
-  | - postcss.config.js    # postcss 相關套件引入
-  | - browserslistrc       # 瀏覽器相容性
-  | - package.json         # Node pkgs
-  | - README.md
+| - src/                 # development 目錄
+| - public/              # production 目錄
+| - gulpfile.js/         # gulp 設定檔
+| - postcss.config.js    # postcss 相關套件引入
+| - browserslistrc       # 瀏覽器相容性
+| - package.json         # Node pkgs
+| - README.md
 ```
 
 ## 關於 `gulp watch`

@@ -1,5 +1,6 @@
 const { src, dest, series, parallel, watch } = require('gulp')
 const postcss = require('gulp-postcss')
+const sourcemaps = require('gulp-sourcemaps')
 const clean = require('gulp-clean')
 
 const html = () => {
@@ -14,9 +15,13 @@ const css = () => {
   /**
    * 複製 src/assets/styles 目錄下的 .css 檔案到 public/styles 目錄中
    * 1. 使用 postcss 搭配 autoprefixer 替 CSS 語法加上前綴詞
+   * 2. 使用 CSS Framework, TailwindCSS
+   * 3. 使用 sourcemaps 定位 CSS source code
    */
   return src('./src/assets/styles/**/*.css')
+    .pipe(sourcemaps.init()) // 初始化 sourcemaps
     .pipe(postcss())
+    .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/styles'))
 }
 
@@ -25,6 +30,9 @@ const js = () => {
    * 複製 src/assets/scripts 目錄下的 .js 檔案到 public/scripts 目錄中
    */
   return src('./src/assets/scripts/**/*.js')
+    // sourcemaps 先放著
+    // .pipe(sourcemaps.init()) // 初始化 sourcemaps
+    // .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/scripts'))
 }
 
@@ -44,7 +52,6 @@ const watchFiles = (done) => {
    * watch syntax: watch('glob string', task func)
    */
   watch(['./src/**/*.{html,css,js}'], parallel(html, css))
-  // watch('./src/assets/styles/**/*.css', css)
   watch('./src/assets/scripts/**/*.js', js)
 
   done()
