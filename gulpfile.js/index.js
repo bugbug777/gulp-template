@@ -97,7 +97,7 @@ const watchFiles = done => {
       baseDir: './public' // <= 指向虛擬伺服器需存取的資料夾
     },
     // port: 6600,
-    reloadDelay: 1000
+    // reloadDelay: 1000
   })
 
   watch('./src/**/*.{html,ejs,css}', parallel(html, css))
@@ -105,6 +105,14 @@ const watchFiles = done => {
   watch('./src/assets/images/**/*.{png,jpg,jpeg,gif,svg}', img)
 
   done()
+}
+
+const deploy = () => {
+  /**
+   * 將建置好的專案推上 Github Pages
+   * 1. 先使用 build 優化程式碼，再使用 deploy 推上 Github Pages
+   */
+  return src('./public/**/*').pipe($.ghPages())
 }
 
 // 測試指令
@@ -127,3 +135,4 @@ exports.build = series(
   },
   parallel(html, css, js, img)
 )
+exports.deploy = deploy

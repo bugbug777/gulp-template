@@ -1,13 +1,14 @@
 # gulp-template
 
-## Table of Contents
+## 快速連結
 
 - [gulp-template](#gulp-template)
-  - [Table of Contents](#table-of-contents)
+  - [快速連結](#快速連結)
   - [關於 ](#關於-)
   - [測試環境 ](#測試環境-)
   - [快速開始 ](#快速開始-)
   - [相關命令 ](#相關命令-)
+  - [關於部署到線上環境](#關於部署到線上環境)
   - [關於 gulp-template 目錄結構](#關於-gulp-template-目錄結構)
   - [關於 `gulp watch`](#關於-gulp-watch)
   - [關於 sourcemaps](#關於-sourcemaps)
@@ -41,6 +42,22 @@
 4. `gulp clean` - 清除暫存檔案
 5. `gulp watch` - 自動監測檔案異動
 6. `gulp build` - 優化、壓縮程式碼
+7. `gulp deploy` - 部署到 Github Pages
+
+## 關於部署到線上環境
+
+由於這個專案使用的是 `gulp-gh-pages` 因此使用部署指令時，會自動的部署到 Github Pages，如果有需要可以自行進行客製化修改。
+
+以下提供簡易的部署步驟：
+```shell
+# 優化、壓縮程式碼以及圖片
+gulp build
+
+# 部署到 Github Pages
+gulp deploy
+```
+
+_NOTE：部署之前需要讓 Repo 與 Github 進行關聯，方能順利進行線上部署_
 
 ## 關於 gulp-template 目錄結構
 
