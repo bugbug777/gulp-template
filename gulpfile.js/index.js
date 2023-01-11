@@ -1,5 +1,5 @@
 const { src, dest, series, parallel, watch } = require('gulp')
-const $ = require('gulp-load-plugins')();
+const $ = require('gulp-load-plugins')()
 const browserSync = require('browser-sync').create()
 
 // 開發狀態
@@ -64,6 +64,15 @@ const js = () => {
     .pipe(browserSync.stream())
 }
 
+const img = () => {
+  /**
+   * 複製 src/assets/images 下的所有圖檔到 public/images
+   */
+  return src('./src/assets/images/**/*.{png,jpg,jpeg,gif,svg}').pipe(
+    dest('./public/images')
+  )
+}
+
 const cleanFiles = () => {
   /**
    * 在開始複製、編譯檔案前，清除 public 目錄，以確保產生乾淨的新檔案
@@ -77,7 +86,9 @@ const watchFiles = done => {
   /**
    * 自動監測檔案變化，並進行檔案的複製、編譯異動
    * watch syntax: watch('glob string', task func)
-   * 1. 移除 globs string {html,css,js} 語法，直接在 ./src 下搜索此語法，可能會浪費效能，應該修改為針對每個目錄進行監測
+   * 1. 使用 TailwindCSS 主要透過 postcss 處理，因此不需要使用額外的 .css 檔案處理
+   * 2. TailwindCSS 會透過 tailwind.config.js 中的 content 擷取要製造 CSS 的檔案，因此不需要透過 watch 處理
+   * 3. watch 主要處理檔案的異動，例如：新增檔案要進行複製，且重新執行任務，因此只要確保 HTML, EJS, CSS 異動時有重新執行任務即可
    */
   browserSync.init({
     server: {
@@ -87,16 +98,9 @@ const watchFiles = done => {
     reloadDelay: 1000
   })
 
-  watch('./src/**/*.{html,ejs}', html)
-  watch(
-    [
-      './src/**/*.{html,ejs}',
-      './src/assets/styles/**/*.css',
-      // './src/assets/scripts/**/*.js' // 先不要支援解析 js 的 css code
-    ],
-    css
-  )
+  watch('./src/**/*.{html,ejs,css}', parallel(html, css))
   watch('./src/assets/scripts/**/*.js', js)
+  watch('./src/assets/images/**/*.{png,jpg,jpeg,gif,svg}', img)
 
   done()
 }
@@ -105,11 +109,12 @@ const watchFiles = done => {
 exports.html = html
 exports.css = css
 exports.js = js
+exports.img = img
 exports.clean = cleanFiles
 exports.watch = watchFiles
 
 // 本地開發
-exports.default = series(cleanFiles, parallel(html, css, js), watchFiles)
+exports.default = series(cleanFiles, parallel(html, css, js, img), watchFiles)
 
 // 線上部署
 exports.build = series(
@@ -118,5 +123,5 @@ exports.build = series(
     status = 'production'
     done()
   },
-  parallel(html, css, js)
+  parallel(html, css, js, img)
 )
