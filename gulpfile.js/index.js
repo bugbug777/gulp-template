@@ -1,17 +1,6 @@
 const { src, dest, series, parallel, watch } = require('gulp')
-const ejs = require('gulp-ejs')
-const layout = require('gulp-layout')
-const frontMatter = require('gulp-front-matter')
-const postcss = require('gulp-postcss')
-const sourcemaps = require('gulp-sourcemaps')
-const concat = require('gulp-concat')
-const babel = require('gulp-babel')
-const clean = require('gulp-clean')
+const $ = require('gulp-load-plugins')();
 const browserSync = require('browser-sync').create()
-const gulpif = require('gulp-if')
-const htmlmin = require('gulp-htmlmin')
-const cleanCSS = require('gulp-clean-css')
-const uglify = require('gulp-uglify')
 
 // 開發狀態
 let status = 'development'
@@ -24,16 +13,16 @@ const html = () => {
    * 3. 將取得的 frontMatter 作為 options 傳遞給 layout 進行使用。透過 callback func 的方式取得 file 物件，並將其 file.frontMatter 回傳給 layout
    */
   return src('./src/**/*.html')
-    .pipe(frontMatter())
+    .pipe($.frontMatter())
     .pipe(
-      layout(function (file) {
+      $.layout(function (file) {
         return file.frontMatter
       })
     )
     .pipe(
-      gulpif(
+      $.if(
         status != 'development',
-        htmlmin({ collapseWhitespace: true, removeComments: true }) // compress with htmlmin, and remove comments in production
+        $.htmlmin({ collapseWhitespace: true, removeComments: true }) // compress with htmlmin, and remove comments in production
       )
     )
     .pipe(dest('./public'))
@@ -48,10 +37,10 @@ const css = () => {
    * 3. 使用 sourcemaps 定位 CSS source code
    */
   return src('./src/assets/styles/**/*.css')
-    .pipe(sourcemaps.init()) // 初始化 sourcemaps
-    .pipe(postcss())
-    .pipe(gulpif(status != 'development', cleanCSS())) // compress with clean-css
-    .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
+    .pipe($.sourcemaps.init()) // 初始化 sourcemaps
+    .pipe($.postcss())
+    .pipe($.if(status != 'development', $.cleanCss())) // compress with clean-css
+    .pipe($.sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/styles'))
     .pipe(browserSync.stream())
 }
@@ -62,15 +51,15 @@ const js = () => {
    * 1. 將數個 scripts 整合成一個 scripts 輸出，減少頁面請求次數，提升網頁載入效率
    */
   return src('./src/assets/scripts/**/*.js')
-    .pipe(sourcemaps.init()) // 初始化 sourcemaps
+    .pipe($.sourcemaps.init()) // 初始化 sourcemaps
     .pipe(
-      babel({
+      $.babel({
         presets: ['@babel/env']
       })
     )
-    .pipe(concat('all.js'))
-    .pipe(gulpif(status != 'development', uglify())) // compress with uglify()
-    .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
+    .pipe($.concat('all.js'))
+    .pipe($.if(status != 'development', $.uglify())) // compress with uglify()
+    .pipe($.sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/scripts'))
     .pipe(browserSync.stream())
 }
@@ -81,7 +70,7 @@ const cleanFiles = () => {
    * 1. read:false 關閉自動讀取以提升效能
    * 2. allowEmpty:true 允許 public 不存在時的例外錯誤
    */
-  return src('./public', { read: false, allowEmpty: true }).pipe(clean())
+  return src('./public', { read: false, allowEmpty: true }).pipe($.clean())
 }
 
 const watchFiles = done => {
@@ -103,7 +92,7 @@ const watchFiles = done => {
     [
       './src/**/*.{html,ejs}',
       './src/assets/styles/**/*.css',
-      './src/assets/scripts/**/*.js'
+      // './src/assets/scripts/**/*.js' // 先不要支援解析 js 的 css code
     ],
     css
   )
