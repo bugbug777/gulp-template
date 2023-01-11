@@ -67,10 +67,12 @@ const js = () => {
 const img = () => {
   /**
    * 複製 src/assets/images 下的所有圖檔到 public/images
+   * 1. imagemin v8.0.0 會有 ESM import 錯誤的問題，要使用 v7.1.0
+   * refs: https://www.npmjs.com/package/gulp-imagemin
    */
-  return src('./src/assets/images/**/*.{png,jpg,jpeg,gif,svg}').pipe(
-    dest('./public/images')
-  )
+  return src('./src/assets/images/**/*.{png,jpg,jpeg,gif,svg}')
+    .pipe($.if(status != 'development', $.imagemin()))
+    .pipe(dest('./public/images'))
 }
 
 const cleanFiles = () => {
