@@ -1,4 +1,7 @@
 const { src, dest, series, parallel, watch } = require('gulp')
+const ejs = require('gulp-ejs')
+const layout = require('gulp-layout')
+const frontMatter = require('gulp-front-matter')
 const postcss = require('gulp-postcss')
 const sourcemaps = require('gulp-sourcemaps')
 const concat = require('gulp-concat')
@@ -9,8 +12,17 @@ const browserSync = require('browser-sync').create()
 const html = () => {
   /**
    * 複製 src 目錄下的 .html 檔案到 public 目錄中
+   * 1. 透過 frontMatter 汲取文檔的 YAML front-matter header，並將其移除
+   * 2. 將 frontMatter 汲取的設定，轉換成物件並令其為新屬性 frontMatter 爾後將其加入到 file 物件中
+   * 3. 將取得的 frontMatter 作為 options 傳遞給 layout 進行使用。透過 callback func 的方式取得 file 物件，並將其 file.frontMatter 回傳給 layout 
    */
   return src('./src/**/*.html')
+    .pipe(frontMatter())
+    .pipe(
+      layout(function (file) {
+        return file.frontMatter
+      })
+    )
     .pipe(dest('./public'))
     .pipe(browserSync.stream())
 }
@@ -68,13 +80,13 @@ const watchFiles = done => {
       baseDir: './public' // <= 指向虛擬伺服器需存取的資料夾
     },
     // port: 6600,
-    reloadDelay: 1000,
+    reloadDelay: 1000
   })
 
-  watch('./src/**/*.html', html)
+  watch('./src/**/*.{html,ejs}', html)
   watch(
     [
-      './src/**/*.html',
+      './src/**/*.{html,ejs}',
       './src/assets/styles/**/*.css',
       './src/assets/scripts/**/*.js'
     ],
