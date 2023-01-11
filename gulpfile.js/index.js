@@ -8,13 +8,20 @@ const concat = require('gulp-concat')
 const babel = require('gulp-babel')
 const clean = require('gulp-clean')
 const browserSync = require('browser-sync').create()
+const gulpif = require('gulp-if')
+const htmlmin = require('gulp-htmlmin')
+const cleanCSS = require('gulp-clean-css')
+const uglify = require('gulp-uglify')
+
+// 開發狀態
+let status = 'development'
 
 const html = () => {
   /**
    * 複製 src 目錄下的 .html 檔案到 public 目錄中
    * 1. 透過 frontMatter 汲取文檔的 YAML front-matter header，並將其移除
    * 2. 將 frontMatter 汲取的設定，轉換成物件並令其為新屬性 frontMatter 爾後將其加入到 file 物件中
-   * 3. 將取得的 frontMatter 作為 options 傳遞給 layout 進行使用。透過 callback func 的方式取得 file 物件，並將其 file.frontMatter 回傳給 layout 
+   * 3. 將取得的 frontMatter 作為 options 傳遞給 layout 進行使用。透過 callback func 的方式取得 file 物件，並將其 file.frontMatter 回傳給 layout
    */
   return src('./src/**/*.html')
     .pipe(frontMatter())
@@ -22,6 +29,12 @@ const html = () => {
       layout(function (file) {
         return file.frontMatter
       })
+    )
+    .pipe(
+      gulpif(
+        status != 'development',
+        htmlmin({ collapseWhitespace: true, removeComments: true }) // compress with htmlmin, and remove comments in production
+      )
     )
     .pipe(dest('./public'))
     .pipe(browserSync.stream())
@@ -37,6 +50,7 @@ const css = () => {
   return src('./src/assets/styles/**/*.css')
     .pipe(sourcemaps.init()) // 初始化 sourcemaps
     .pipe(postcss())
+    .pipe(gulpif(status != 'development', cleanCSS())) // compress with clean-css
     .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/styles'))
     .pipe(browserSync.stream())
@@ -55,6 +69,7 @@ const js = () => {
       })
     )
     .pipe(concat('all.js'))
+    .pipe(gulpif(status != 'development', uglify())) // compress with uglify()
     .pipe(sourcemaps.write('./maps')) // 指定 sourcemaps 輸出路徑
     .pipe(dest('./public/scripts'))
     .pipe(browserSync.stream())
@@ -104,5 +119,15 @@ exports.js = js
 exports.clean = cleanFiles
 exports.watch = watchFiles
 
-// 預設指令
+// 本地開發
 exports.default = series(cleanFiles, parallel(html, css, js), watchFiles)
+
+// 線上部署
+exports.build = series(
+  cleanFiles,
+  done => {
+    status = 'production'
+    done()
+  },
+  parallel(html, css, js)
+)

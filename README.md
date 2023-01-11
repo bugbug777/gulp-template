@@ -40,6 +40,7 @@
 3. `gulp js` - 複製 js
 4. `gulp clean` - 清除暫存檔案
 5. `gulp watch` - 自動監測檔案異動
+6. `gulp build` - 優化、壓縮程式碼
 
 ## 關於 gulp-template 目錄結構
 
@@ -49,7 +50,7 @@ gulp-template
 | - public/              # production 目錄
 | - gulpfile.js/         # gulp 設定檔
 | - postcss.config.js    # postcss 相關套件引入
-| - browserslistrc       # 瀏覽器相容性
+| - .browserslistrc      # 瀏覽器相容性
 | - package.json         # Node pkgs
 | - README.md
 ```
